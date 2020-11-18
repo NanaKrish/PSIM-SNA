@@ -1,8 +1,9 @@
 from abc import ABC, abstractmethod
 from math import sqrt
 from typing import List, Generator, Any
-
+from itertools import combinations 
 import numpy as np
+import networkx as nx
 
 
 class Disease(ABC):
@@ -69,6 +70,32 @@ class Person:
 class Population:
     def __init__(self, data: Generator[Person, None, Any]):
         self.__population = self.__construct_population(data)
+        self.__graph = self.__construct_initial_graph()
+        self.distance_matrix = Location.calculate_distance_matrix(self)
+
+    def __construct_initial_graph(self) -> nx.Graph:
+        """
+        Initializes the graph of the population
+        """
+        def initial_edge_weight(A:Person, B:Person):
+            SAFE_DISTANCE = 10
+            euclidean_distance = Location.calculate_distance(A.location, B.location)
+            if(euclidean_distance <= SAFE_DISTANCE):
+                return True
+            return False
+        G = nx.Graph()
+        G.add_nodes_from(self.__population)
+
+        # Add the initial edges
+        # Generate all the possible pairwise combinations 
+        pairs = combinations(G.nodes,2)
+        for u, v in pairs:
+            if initial_edge_weight(u, v):
+                G.add_edge(u,v)
+        return G
+
+    def get_graph(self) -> nx.Graph:
+        return self.__graph
 
     @staticmethod
     def __construct_population(data: Generator[Person, None, Any]):
