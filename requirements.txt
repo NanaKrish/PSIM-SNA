@@ -1,2 +1,5 @@
 numpy
 networkx
+dash
+plotly
+dash-cytoscape
