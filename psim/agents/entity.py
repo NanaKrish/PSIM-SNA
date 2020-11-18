@@ -56,8 +56,14 @@ class Person:
     def __repr__(self):
         return repr(self.name)
 
+    def __str__(self):
+        return f'<{self.name}- {self.age}>'
+
     def __eq__(self, other):
         return self.name == other.name and self.age == other.age
+    
+    def __hash__(self):
+        return hash(self.name) + hash(self.age)
 
 
 class Population:
