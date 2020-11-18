@@ -1,13 +1,11 @@
-from typing import Iterable
-
 import networkx as nx
 
-from psim.agents.entity import Person
+from psim.agents.entity import Population
 
 
 class InfectionGraph:
 
-    def __init__(self, population: Iterable[Person]):
+    def __init__(self, population: Population):
         self.__population = population
         self.__graph = self.__construct_initial_graph()
 
@@ -16,3 +14,4 @@ class InfectionGraph:
         Initializes the infection graph
         """
         pass
+
