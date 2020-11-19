@@ -88,7 +88,7 @@ class Population:
         self.__population = self.__construct_population(data)
         self.__graph = self.__construct_initial_graph()
         self.distance_matrix = Location.calculate_distance_matrix(self)
-        self.healthy = self.__population # Initially, everyone is healthy
+        self.healthy = self.__population  # Initially, everyone is healthy
         self.infected = []
 
     def __construct_initial_graph(self) -> nx.Graph:
@@ -97,9 +97,9 @@ class Population:
         """
 
         def initial_edge_weight(p1: Person, p2: Person):
-            SAFE_DISTANCE = 10
+            SAFE_DISTANCE = 20
             euclidean_distance = Location.calculate_distance(p1.location, p2.location)
-            if(euclidean_distance <= SAFE_DISTANCE):
+            if euclidean_distance <= SAFE_DISTANCE:
                 edge_weight = (p1.probability_of_infection + p2.probability_of_infection) / 2
                 return edge_weight
             return False
@@ -113,7 +113,7 @@ class Population:
         for u, v in pairs:
             calculated_weight = initial_edge_weight(u, v)
             if calculated_weight:
-                G.add_edge(u,v, weight=calculated_weight)
+                G.add_edge(u, v, weight=calculated_weight)
         return G
 
     def get_graph(self) -> nx.Graph:
@@ -132,15 +132,13 @@ class Population:
 
     def infect_person(self, p: Person):
         # find the person in the population
-        result = filter(lambda a: a ==p, self.get_people())
-        l =  list(result)
-        if len(l) > 0:
-            to_be_infected = l[0]
-            to_be_infected.healthy = False
+        # result = filter(lambda a: a == p, self.get_people())
+        # l = list(result)
+        # if len(l) > 0:
+        p.healthy = False
 
-            ## Update the state
-            self.healthy.remove(p)
-            self.infected.append(p)
+        # self.healthy.remove(p)
+        # self.infected.append(p)
 
     def get_population_status(self, raw=False):
         """

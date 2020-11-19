@@ -9,6 +9,7 @@ from psim.agents.entity import Population
 from psim.agents.infectors import COVID19
 from psim.simulator import PSIMModel
 from psim.utils import helpers
+
 cyto.load_extra_layouts()
 app = dash.Dash(__name__)
 
@@ -58,10 +59,12 @@ app.layout = html.Div([
 ])
 app.title = 'PSIM'
 
+
 @app.callback(Output('cytoscape-population-graph', 'elements'),
               [Input('btn-advance-next', 'n_clicks_timestamp')])
 def advance(btn_advance):
-    sim.simulate_one_step()
+    if btn_advance > 0:
+        sim.simulate_one_step()
     return helpers.get_cytoscape_elts(sim.population.get_graph())
 
 
