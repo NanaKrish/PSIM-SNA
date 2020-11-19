@@ -97,7 +97,7 @@ class Population:
         """
 
         def initial_edge_weight(p1: Person, p2: Person):
-            SAFE_DISTANCE = 20
+            SAFE_DISTANCE = 10
             euclidean_distance = Location.calculate_distance(p1.location, p2.location)
             if euclidean_distance <= SAFE_DISTANCE:
                 edge_weight = (p1.probability_of_infection + p2.probability_of_infection) / 2

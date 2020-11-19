@@ -22,17 +22,20 @@ class COVID19(Disease):
 
     def infection_function(self, population: Population):
         g = population.get_graph()
+        timef = []
         for infected_person in population.get_population_status(raw=True)['infected']:
             adjacent_edges = g.edges(infected_person, data=True)
             for u, v, d in adjacent_edges:
                 weight = d['weight']
-                time = self.calculate_time(weight)
+                time = 0
+                if v.healthy:
+                    time = self.calculate_time(weight)
+                    if time < self.THRESHOLD_TIME:
+                        population.infect_person(v)
                 g.edges[u, v]['time'] = time
-                if time < self.THRESHOLD_TIME:
-                    population.infect_person(v)
 
-            max_time = 0
             for u, v, d in adjacent_edges:
-                if not v.healthy and d['time'] > max_time:
-                    max_time = d['time']
-            self.elapsed_time += max_time
+                if not v.healthy:
+                    timef.append(d['time'])
+        f = max(timef)
+        self.elapsed_time += f
