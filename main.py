@@ -9,7 +9,7 @@ from psim.agents.entity import Population
 from psim.agents.infectors import COVID19
 from psim.simulator import PSIMModel
 from psim.utils import helpers
-
+cyto.load_extra_layouts()
 app = dash.Dash(__name__)
 
 CONFIG = {
@@ -28,7 +28,7 @@ sim = PSIMModel(population, covid)
 app.layout = html.Div([
     cyto.Cytoscape(
         id='cytoscape-population-graph',
-        layout={'name': 'circle'},
+        layout={'name': 'cola'},
         style={'width': '80%', 'height': '600px'},
         elements=helpers.get_cytoscape_elts(sim.population.get_graph()),
         stylesheet=[
@@ -56,7 +56,7 @@ app.layout = html.Div([
         html.Button('Advance', id='btn-advance-next', n_clicks_timestamp=0),
     ])
 ])
-
+app.title = 'PSIM'
 
 @app.callback(Output('cytoscape-population-graph', 'elements'),
               [Input('btn-advance-next', 'n_clicks_timestamp')])
