@@ -1,9 +1,10 @@
 from abc import ABC, abstractmethod
+from itertools import combinations
 from math import sqrt
 from typing import List, Generator, Any
-from itertools import combinations
-import numpy as np
+
 import networkx as nx
+import numpy as np
 
 
 class Disease(ABC):
@@ -13,7 +14,7 @@ class Disease(ABC):
         self._infection_type = infection_type
 
     @abstractmethod
-    def infection_function(self, population, *args):
+    def infection_function(self, *args):
         pass
 
 
@@ -42,7 +43,7 @@ class Location:
 
         for i, p1 in enumerate(population.get_people()):
             for j, p2 in enumerate(population.get_people()):
-                if i < j:
+                if i != j:
                     matrix[i][j] = Location.calculate_distance(p1.location, p2.location)
         return matrix
 
@@ -62,7 +63,7 @@ class Person:
 
     def __eq__(self, other):
         return self.name == other.name and self.age == other.age
-    
+
     def __hash__(self):
         return hash(self.name) + hash(self.age)
 
@@ -77,21 +78,23 @@ class Population:
         """
         Initializes the graph of the population
         """
-        def initial_edge_weight(A:Person, B:Person):
+
+        def initial_edge_weight(p1: Person, p2: Person):
             SAFE_DISTANCE = 10
-            euclidean_distance = Location.calculate_distance(A.location, B.location)
-            if(euclidean_distance <= SAFE_DISTANCE):
+            euclidean_distance = Location.calculate_distance(p1.location, p2.location)
+            if euclidean_distance <= SAFE_DISTANCE:
                 return True
             return False
+
         G = nx.Graph()
         G.add_nodes_from(self.__population)
 
         # Add the initial edges
         # Generate all the possible pairwise combinations 
-        pairs = combinations(G.nodes,2)
+        pairs = combinations(G.nodes, 2)
         for u, v in pairs:
             if initial_edge_weight(u, v):
-                G.add_edge(u,v)
+                G.add_edge(u, v)
         return G
 
     def get_graph(self) -> nx.Graph:
@@ -110,7 +113,7 @@ class Population:
 
     def infect_person(self, p: Person):
         # find the person in the population
-        result = filter(lambda a: a ==p, self.get_people()) 
+        result = filter(lambda a: a == p, self.get_people())
         to_be_infected = list(result)[0]
         to_be_infected.healthy = False
 

@@ -14,46 +14,47 @@ app = dash.Dash(__name__)
 
 CONFIG = {
     'DEBUG': True,
-    'DATA_DIR':  os.path.join(os.path.abspath(os.path.dirname(__file__)), 'psim/data')
+    'DATA_DIR': os.path.join(os.path.abspath(os.path.dirname(__file__)), 'psim/data')
 }
 
 POPULATION_DATA_FILE = os.path.join(CONFIG['DATA_DIR'], 'population.csv')
 
 people = helpers.load_user_data(POPULATION_DATA_FILE)
 population = Population(people)
-sim = PSIMModel(population, COVID19)
 
+covid = COVID19(10, 10, "AirBorne")
+sim = PSIMModel(population, covid)
 
 app.layout = html.Div([
     cyto.Cytoscape(
         id='cytoscape-population-graph',
         layout={'name': 'circle'},
         style={'width': '80%', 'height': '600px'},
-        elements = helpers.get_cytoscape_elts(sim.population.get_graph()),
+        elements=helpers.get_cytoscape_elts(sim.population.get_graph()),
         stylesheet=[
-        {
-            'selector': '[infected = "true"]',
-            'style': {
-                'background-color': '#ff6e66',
+            {
+                'selector': '[infected = "true"]',
+                'style': {
+                    'background-color': '#ff6e66',
+                }
+            },
+            {
+                'selector': 'node',
+                'style': {
+                    'label': 'data(id)',
+                }
+            },
+            {
+                'selector': '[infected = "false"]',
+                'style': {
+                    'background-color': '#63f2a1',
+                }
             }
-        },
-        {
-            'selector': 'node',
-            'style': {
-                'label': 'data(id)',
-            }
-        },
-        {
-            'selector': '[infected = "false"]',
-            'style': {
-                'background-color': '#63f2a1',
-            }
-        }
-    ]
+        ]
     ),
     html.Div([
-    html.Button('Advance', id='btn-advance-next', n_clicks_timestamp=0),
-])
+        html.Button('Advance', id='btn-advance-next', n_clicks_timestamp=0),
+    ])
 ])
 
 
@@ -63,8 +64,10 @@ def advance(btn_advance):
     sim.simulate_one_step()
     return helpers.get_cytoscape_elts(sim.population.get_graph())
 
+
 def main():
     app.run_server(debug=CONFIG['DEBUG'], use_reloader=CONFIG['DEBUG'])
+
 
 if __name__ == '__main__':
     main()
