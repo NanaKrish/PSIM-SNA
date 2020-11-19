@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 from math import sqrt
 from typing import List, Generator, Any
-from itertools import combinations 
+from itertools import combinations
 import numpy as np
 import networkx as nx
 
@@ -13,7 +13,7 @@ class Disease(ABC):
         self._infection_type = infection_type
 
     @abstractmethod
-    def infection_function(self, *args):
+    def infection_function(self, population, *args):
         pass
 
 
@@ -107,6 +107,12 @@ class Population:
 
     def size(self):
         return len(self.__population)
+
+    def infect_person(self, p: Person):
+        # find the person in the population
+        result = filter(lambda a: a ==p, self.get_people()) 
+        to_be_infected = list(result)[0]
+        to_be_infected.healthy = False
 
     def get_population_status(self, raw=False):
         """

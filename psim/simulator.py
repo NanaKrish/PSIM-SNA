@@ -11,18 +11,15 @@ class PSIMModel:
         self.cems = defaultdict(list)
         # Randomly infect a person first
         u = choice(self.population.get_people())
-        u.healthy = False
+        population.infect_person(u)
         print('Infected with virus:', u)
 
     def register_cem(self, target_week: int, cem: BaseCEM):
         self.cems[target_week].append(cem)
 
     def simulate_one_step(self):
-        g = self.population.get_graph()
-        # TODO: Do what we need to do for the 
-        # infection to spread
-        u = choice(list(g.nodes()))
-        u.healthy = False
+        self.disease.infection_function(self.disease, self.population)
+
 
     def simulate(self):
         pass
