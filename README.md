@@ -1,5 +1,5 @@
 # PSIM
-A pandemic simulator modeled using graph networks to provide insights and provide strategic situation handling 
+A pandemic simulator modeled using graphs to provide insights and provide for strategic situation handling using data driven metrics
 
 
 - Person -> age and location(coordinates)
